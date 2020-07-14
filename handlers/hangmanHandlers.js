@@ -1,3 +1,39 @@
 const { words } = require('../data/words');
+const dictionaryLength = words.length;
 
-// write your handlers here...
+function findWord(id) {
+  return words.find(word => word.id == id);
+}
+
+function showWord(req, res) {
+  const wordID = req.params.id;
+  const word = findWord(wordID);
+
+  res.status(200).json({ status: 200, word })
+}
+
+function getWordData(req, res) {
+  const randomID = Math.floor(Math.random() * dictionaryLength);
+
+  const randomWord = {...findWord(randomID)};
+
+  delete randomWord.word;
+
+  res.status(200).json({ status: 200, randomWord });
+}
+
+function guessLetter(req, res) {
+  const id = req.params.id;
+  const guess = req.params.guess.toLowerCase();
+  const word = findWord(id).word;
+
+  let guessResponse;
+  if (guess.length > 1) {
+    guessResponse = guess === word;
+  }
+  else guessResponse = [...word].map(letter => letter == guess);
+
+  res.status(200).json({ status: 200, guessResponse });
+}
+
+module.exports = { showWord, getWordData, guessLetter }
