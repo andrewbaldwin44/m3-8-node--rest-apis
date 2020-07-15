@@ -40,6 +40,7 @@ function handleLetterClick() {
 }
 
 function guessLetter(letter) {
+  console.log(wordID)
   fetch(`/hangman/guess/${wordID}/${letter}`)
   .then(response => response.json())
   .then((data) => {
@@ -61,7 +62,7 @@ function placeLetters(guessResponse, letter) {
 fetch('/hangman/word')
 .then(response => response.json())
 .then((data) => {
-  const { id, letterCount } = data.randomWord;
+  const { id, letterCount } = data.wordData;
   wordID = id;
   wordLength = letterCount;
 })
