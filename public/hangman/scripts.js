@@ -1,15 +1,19 @@
-let jokeID, jokeLength;
+let wordID, wordLength;
 
-const letterIndicators = document.querySelector('#letter-indicators');
-const letterButtons = document.querySelector('#letter-buttons');
+const letterIndicatorsContainer = document.querySelector('#letter-indicators');
+const letterButtonsContainer = document.querySelector('#letter-buttons');
+let letterIndicators = [];
+const hangman = document.querySelector('#hangman');
+let hangmanStatus = 1;
 
-function createIndicators(jokeLength) {
-  for (let i = 0; i < jokeLength; i++) {
+function createIndicators() {
+  for (let i = 1; i <= wordLength; i++) {
     const indicator = document.createElement('span');
 
-    indicator.textContent = '___';
+    indicator.textContent = '_';
 
-    letterIndicators.appendChild(indicator);
+    letterIndicators.push(indicator);
+    letterIndicatorsContainer.appendChild(indicator);
   }
 }
 
@@ -22,22 +26,44 @@ function createButtons() {
     button.value = letter;
     button.textContent = letter.toUpperCase();
 
-    button.addEventListener('click', guessLetter);
+    button.addEventListener('click', handleLetterClick, {once: true});
 
-    letterButtons.appendChild(button);
+    letterButtonsContainer.appendChild(button);
   });
 }
 
-function guessLetter() {
+function handleLetterClick() {
+  const button = event.target;
 
+  button.classList.add('selected-letter');
+  guessLetter(button.value);
 }
 
-fetch(`/hangman/word`)
+function guessLetter(letter) {
+  fetch(`/hangman/guess/${wordID}/${letter}`)
+  .then(response => response.json())
+  .then((data) => {
+    const { guessResponse } = data;
+
+    if (!guessResponse.some(response => response)) {
+      hangmanStatus++;
+      hangman.src = `images/hangman${hangmanStatus}.png`;
+    } else placeLetters(guessResponse, letter);
+  })
+}
+
+function placeLetters(guessResponse, letter) {
+  guessResponse.forEach((response, index) => {
+    if (response) letterIndicators[index].textContent = letter;
+  });
+}
+
+fetch('/hangman/word')
 .then(response => response.json())
 .then((data) => {
   const { id, letterCount } = data.randomWord;
-  jokeID = id;
-  return jokeLength = letterCount;
+  wordID = id;
+  wordLength = letterCount;
 })
 .then(createIndicators)
 .then(createButtons);

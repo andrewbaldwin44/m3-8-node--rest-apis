@@ -27,11 +27,7 @@ function guessLetter(req, res) {
   const guess = req.params.guess.toLowerCase();
   const word = findWord(id).word;
 
-  let guessResponse;
-  if (guess.length > 1) {
-    guessResponse = guess === word;
-  }
-  else guessResponse = [...word].map(letter => letter == guess);
+  guessResponse = [...word].map(letter => letter == guess);
 
   res.status(200).json({ status: 200, guessResponse });
 }

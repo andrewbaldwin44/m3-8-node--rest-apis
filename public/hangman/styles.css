@@ -32,3 +32,17 @@ body {
   border-radius: 8px;
   cursor: pointer;
 }
+
+.letter-button:hover {
+  background-color: #ea80fc;
+}
+
+.selected-letter, .selected-letter:hover {
+  background-color: transparent;
+}
+
+.selected-letter {
+  background-color: transparent;
+  border: none;
+  color: red;
+}
