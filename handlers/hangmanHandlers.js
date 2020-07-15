@@ -12,7 +12,7 @@ function showWord(req, res) {
   res.status(200).json({ status: 200, word })
 }
 
-function getWordData(req, res) {
+async function getWordData(req, res) {
   const randomID = Math.floor(Math.random() * dictionaryLength);
 
   const randomWord = {...findWord(randomID)};

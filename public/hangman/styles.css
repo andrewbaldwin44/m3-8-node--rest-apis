@@ -1,0 +1,34 @@
+body {
+  font-family: 'Varela Round', sans-serif;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
+.hangman {
+  height: 350px;
+  width: auto;
+}
+
+.letter-indicators {
+  font-size: 2.4em;
+  letter-spacing: 5px;
+}
+
+.letter-buttons {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.letter-button {
+  font-size: inherit;
+  font-family: inherit;
+  height: 70px;
+  width: 70px;
+  background-color: #b388ff;
+  border-radius: 8px;
+  cursor: pointer;
+}
