@@ -3,6 +3,7 @@ let wordID, wordLength;
 const letterIndicatorsContainer = document.querySelector('#letter-indicators');
 const letterButtonsContainer = document.querySelector('#letter-buttons');
 let letterIndicators = [];
+let letterButtons = [];
 const hangman = document.querySelector('#hangman');
 let hangmanStatus = 1;
 
@@ -28,6 +29,7 @@ function createButtons() {
 
     button.addEventListener('click', handleLetterClick, {once: true});
 
+    letterButtons.push(button);
     letterButtonsContainer.appendChild(button);
   });
 }
@@ -40,7 +42,6 @@ function handleLetterClick() {
 }
 
 function guessLetter(letter) {
-  console.log(wordID)
   fetch(`/hangman/guess/${wordID}/${letter}`)
   .then(response => response.json())
   .then((data) => {
@@ -49,6 +50,8 @@ function guessLetter(letter) {
     if (!guessResponse.some(response => response)) {
       hangmanStatus++;
       hangman.src = `images/hangman${hangmanStatus}.png`;
+
+      if (hangmanStatus == 7) endGame();
     } else placeLetters(guessResponse, letter);
   })
 }
@@ -59,12 +62,21 @@ function placeLetters(guessResponse, letter) {
   });
 }
 
-fetch('/hangman/word')
-.then(response => response.json())
-.then((data) => {
+function endGame() {
+  letterButtons.forEach(button => {
+    button.removeEventListener('click', handleLetterClick);
+  });
+}
+
+async function getWord() {
+  const response = await fetch('/hangman/word')
+  const data = await response.json();
   const { id, letterCount } = data.wordData;
   wordID = id;
   wordLength = letterCount;
-})
-.then(createIndicators)
-.then(createButtons);
+
+  createIndicators()
+  createButtons();
+}
+
+getWord();
